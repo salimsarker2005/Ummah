@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 আপনি দেখতে মাস আল্লাহ 🌸</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Mina&display=swap');
+        
+        :root {
+            --primary: #ff2e63;
+            --secondary: #ff8fab;
+            --dark: #1a1a2e;
+            --light: #fff5f7;
+            --gold: #ffd700;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Mina', sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255, 46, 99, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(255, 143, 171, 0.1) 0%, transparent 30%);
+        }
+        
+        .game-container {
+            position: relative;
+            width: 95%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 46, 99, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transform: scale(0.9);
+            opacity: 0;
+            animation: appear 1s forwards 0.5s;
+        }
+        
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 46, 99, 0.5);
+        }
+        
+        .game-area {
+            margin: 25px 0;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .tile {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .tile:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .tile.flipped {
+            background: var(--primary);
+            transform: rotateY(180deg);
+        }
+        
+        .tile.matched {
+            background: var(--gold);
+            cursor: default;
+        }
+        
+        .message {
+            font-size: 1.3rem;
+            margin: 20px 0;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .final-message {
+            font-size: 2rem;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(255, 46, 99, 0.5);
+            margin: 20px 0;
+            animation: pulse 1.5s infinite;
+        }
+        
+        button {
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            background: var(--primary);
+            color: white;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(255, 46, 99, 0.3);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 46, 99, 0.4);
+            background: #ff1a53;
+        }
+        
+        .hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart {
+            position: absolute;
+            opacity: 0;
+            font-size: 1.5rem;
+            color: var(--primary);
+            animation: float-up var(--duration) linear infinite;
+            filter: drop-shadow(0 0 5px var(--primary));
+        }
+        
+        @keyframes appear {
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes float-up {
+            0% { 
+                transform: translateY(100vh) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            20% { opacity: 0.8; }
+            100% { 
+                transform: translateY(-100px) rotate(360deg) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            .game-board {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+            }
+            
+            .message {
+                font-size: 1.1rem;
+            }
+            
+            .final-message {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="heartsContainer"></div>
+    
+    <div class="game-container" id="gameContainer">
+        <h1>🌸 আপনি দেখতে মাস আল্লাহ 🌸</h1>
+        
+        <div class="game-area">
+            <div class="message" id="message">জোড়া মেলানোর গেম খেলো ❤</div>
+            
+            <div class="game-board" id="gameBoard"></div>
+            
+            <div class="final-message" id="finalMessage" style="display: none;">😘I LOVE YOU😘</div>
+            
+            <button id="restartBtn" style="display: none;">আবার খেলুন</button>
+        </div>
+    </div>
+
+    <script>
+        // Game setup
+        const symbols = ['❤', '🌸', '💋', '🌹', '😊', '💕', '✨', '🥰'];
+        let tiles = [];
+        let flippedTiles = [];
+        let matchedPairs = 0;
+        let canFlip = true;
+        
+        // Create hearts background
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.setProperty('--duration', (5 + Math.random() * 10) + 's');
+            heart.style.fontSize = (1 + Math.random() * 2) + 'rem';
+            container.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 15000);
+        }
+        
+        // Create initial hearts
+        for(let i=0; i<20; i++) {
+            setTimeout(() => {
+                createHearts();
+            }, i * 300);
+        }
+        
+        // Continue creating hearts
+        setInterval(createHearts, 500);
+        
+        // Initialize game
+        function initGame() {
+            const gameBoard = document.getElementById('gameBoard');
+            gameBoard.innerHTML = '';
+            flippedTiles = [];
+            matchedPairs = 0;
+            canFlip = true;
+            
+            document.getElementById('finalMessage').style.display = 'none';
+            document.getElementById('restartBtn').style.display = 'none';
+            document.getElementById('message').textContent = 'জোড়া মেলানোর গেম খেলো ❤';
+            
+            // Create pairs of symbols
+            let gameSymbols = [];
+            symbols.forEach(symbol => {
+                gameSymbols.push(symbol, symbol);
+            });
+            
+            // Shuffle symbols
+            gameSymbols = shuffleArray(gameSymbols);
+            
+            // Create tiles
+            tiles = gameSymbols.map((symbol, index) => {
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                tile.dataset.symbol = symbol;
+                tile.dataset.index = index;
+                tile.addEventListener('click', flipTile);
+                gameBoard.appendChild(tile);
+                return {
+                    element: tile,
+                    symbol: symbol,
+                    flipped: false,
+                    matched: false
+                };
+            });
+        }
+        
+        // Shuffle array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        // Flip tile
+        function flipTile() {
+            if (!canFlip) return;
+            
+            const index = parseInt(this.dataset.index);
+            const tile = tiles[index];
+            
+            if (tile.flipped || tile.matched) return;
+            
+            // Flip the tile
+            tile.flipped = true;
+            this.textContent = tile.symbol;
+            this.classList.add('flipped');
+            
+            flippedTiles.push(tile);
+            
+            // Check for match
+            if (flippedTiles.length === 2) {
+                canFlip = false;
+                checkMatch();
+            }
+        }
+        
+        // Check for match
+        function checkMatch() {
+            const [tile1, tile2] = flippedTiles;
+            
+            if (tile1.symbol === tile2.symbol) {
+                // Match found
+                tile1.matched = true;
+                tile2.matched = true;
+                tile1.element.classList.add('matched');
+                tile2.element.classList.add('matched');
+                
+                matchedPairs++;
+                document.getElementById('message').textContent = 'ভালো কাজ! আরও জোড়া মেলাও!';
+                
+                // Check if game is complete
+                if (matchedPairs === symbols.length) {
+                    setTimeout(() => {
+                        document.getElementById('message').style.display = 'none';
+                        document.getElementById('gameBoard').style.display = 'none';
+                        document.getElementById('finalMessage').style.display = 'block';
+                        document.getElementById('restartBtn').style.display = 'inline-block';
+                        
+                        // Create heart explosion
+                        for(let i=0; i<50; i++) {
+                            setTimeout(() => {
+                                createHearts();
+                            }, i * 100);
+                        }
+                    }, 500);
+                }
+            } else {
+                // No match
+                document.getElementById('message').textContent = 'আবার চেষ্টা করো!';
+                
+                setTimeout(() => {
+                    tile1.flipped = false;
+                    tile2.flipped = false;
+                    tile1.element.textContent = '';
+                    tile2.element.textContent = '';
+                    tile1.element.classList.remove('flipped');
+                    tile2.element.classList.remove('flipped');
+                }, 1000);
+            }
+            
+            setTimeout(() => {
+                flippedTiles = [];
+                canFlip = true;
+            }, 1000);
+        }
+        
+        // Event listeners
+        document.getElementById('restartBtn').addEventListener('click', initGame);
+        
+        // Start the game
+        initGame();
+    </script>
+</body>
+</html>
